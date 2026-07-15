@@ -41,7 +41,7 @@ int main(void) {
 
 ## features
 
-- quick formatting with `catk_fmt`/`catk_vmt`
+- quick formatting with `catk_fmt`/`catk_vfmt`
 - string builder API with `catk_strbuilder_t` and `catk_strbuilder_*` functions
 - new features coming in newer updates (no shit lmao)
 
