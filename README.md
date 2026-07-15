@@ -42,6 +42,7 @@ int main(void) {
 
 - quick formatting with `catk_fmt`/`catk_vfmt`
 - string builder API with `catk_strbuilder_t` and `catk_strbuilder_*` functions
+- prefix stripping with `CATKIT_STRIP_PREFIX`
 - new features coming in newer updates (no shit lmao)
 
 check out [docs.md](docs.md) for API reference
