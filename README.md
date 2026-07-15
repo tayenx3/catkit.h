@@ -1,2 +1,54 @@
-# catkit.h
-A little support when wrestling with C strings
+<div align="center">
+    <img src="images/tamm-cat.png" width=200>
+    <h1><code>catkit.h</code></h1>
+    <img src="https://img.shields.io/badge/release-0.1.0--alpha.1-blue">
+</div>
+
+when the cat helps you with C strings in a single header file
+
+## prerequisites
+
+- C compiler
+- C ABI
+- (yea that's it)
+
+but you will need Git to download the header file from the repository
+
+## how to use
+
+```bash
+# first navigate to your project's folder or where you want the header file to be at
+git clone https://github.com/tayenx3/catkit.h.git catkit
+cp catkit/catkit.h .
+rm -r catkit
+
+# if you.. don't have Git somehow
+curl -O https://raw.githubusercontent.com/tayenx3/catkit.h/main/catkit.h
+```
+
+you should now see `catkit.h` in the folder you started in
+
+`catkit.h` is used in a stb-style
+
+```c
+#define CATKIT_IMPLEMENTATION
+#include "catkit.h"
+
+int main(void) {
+    // main code
+}
+```
+
+## features
+
+- quick formatting with `catk_fmt`/`catk_vmt`
+- string builder API with `catk_strbuilder_t` and `catk_strbuilder_*` functions
+- new features coming in newer updates (no shit lmao)
+
+check out [docs.md](docs.md) for API reference
+
+## license
+
+MIT
+
+see [LICENSE](LICENSE) for more details
