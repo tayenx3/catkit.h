@@ -33,6 +33,19 @@ void catk_strbuilder_destroy(catk_strbuilder_t* sb);
 // clears the current buffer but does not free resources or reset capacity. safe to call multiple times
 void catk_strbuilder_clear(catk_strbuilder_t* sb);
 
+#ifdef CATKIT_STRIP_PREFIX
+    #define fmt(...) catk_fmt(__VA_ARGS__)
+    #define vfmt(format, args) catk_vfmt(format, args)
+    typedef catk_strbuilder_t strbuilder_t;
+    #define strbuilder_appendf(sb, ...) catk_strbuilder_appendf(sb, __VA_ARGS__)
+    #define strbuilder_vappendf(sb, fmt, args) catk_strbuilder_vappendf(sb, fmt, args)
+    #define strbuilder_get(sb) catk_strbuilder_get(sb)
+    #define strbuilder_build(sb) catk_strbuilder_build(sb)
+    #define strbuilder_copy(dest_sb, src_sb) catk_strbuilder_copy(dest_sb, src_sb)
+    #define strbuilder_destroy(sb) catk_strbuilder_destroy(sb)
+    #define strbuilder_clear(sb) catk_strbuilder_clear(sb)
+#endif
+
 #ifdef CATKIT_IMPLEMENTATION
 
 #include <stdlib.h>

@@ -1,5 +1,13 @@
 # catkit API reference
 
+## prefix stripping
+
+you can define `CATKIT_STRIP_PREFIX` like so:
+```c
+#define CATKIT_STRIP_PREFIX
+```
+and `catkit.h` will provide typenames and functions without the explicit `catk_` prefix
+
 ## quick formatting
 
 ```c
