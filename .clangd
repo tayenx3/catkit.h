@@ -1,5 +1,8 @@
-If:
-  PathMatch:
-    - '.*\.h'
 CompileFlags:
-  Add: [-x, c]
+  Add:
+    - -std=c99
+    - -Wall
+    - -Wextra
+    - -Wpedantic
+    - -x
+    - c

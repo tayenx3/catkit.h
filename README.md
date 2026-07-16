@@ -1,7 +1,7 @@
 <div align="center">
     <img src="images/tamm-cat.png" width=200>
     <h1><code>catkit.h</code></h1>
-    <img src="https://img.shields.io/badge/release-0.1.0--alpha.1-blue">
+    <img src="https://img.shields.io/badge/release-v0.1.0--alpha.1-blue">
     <p><strong>when the cat helps you with C strings in a single header file</strong></p>
 </div>
 

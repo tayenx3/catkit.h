@@ -26,4 +26,21 @@ int main(void) {
     const char* sb2_result = catk_strbuilder_get(&sb2);
     printf("%s\n", sb2_result);
     catk_strbuilder_destroy(&sb2);
+    
+    catk_strbuilder_t sb3 = {0};
+    catk_strbuilder_appendc(&sb3, 'a');
+    catk_strbuilder_appendc(&sb3, 'b');
+    catk_strbuilder_appendc(&sb3, 'c');
+    printf("%s\n", catk_strbuilder_get(&sb3));
+    catk_strbuilder_insertc(&sb3, 1, '1');
+    catk_strbuilder_insertc(&sb3, 3, '2');
+    catk_strbuilder_insertc(&sb3, 5, '3');
+    char* sb3_result = catk_strbuilder_build(&sb3);
+    printf("%s\n", sb3_result);
+    free(sb3_result);
+    // reuseable
+    catk_strbuilder_appendf(&sb3, "ab", 2);
+    char* sb3_result2 = catk_strbuilder_build(&sb3);
+    printf("%s\n", sb3_result2);
+    free(sb3_result2);
 }
