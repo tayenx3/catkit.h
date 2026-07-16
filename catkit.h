@@ -18,6 +18,10 @@
  * - CATKIT_REALLOC(block, size) - which realloc() catkit.h will use
  * - CATKIT_FREE(block) - which free() catkit.h will use
  * 
+ * # basic usage
+ * 
+ * check out [examples.c](examples.c) file for examples
+ * 
  * # catkit.h's versioning rule
  * 
  * catkit.h's versioning follows [SemVer](https://semver.org)
@@ -51,27 +55,25 @@
     #endif // _CRT_SECURE_NO_WARNINGS
 #endif //  _WIN32
 
-#ifndef CATKIT_MALLOC
 #include <stdlib.h>
+#include <stdarg.h>
+#include <stddef.h>
+
+#ifndef CATKIT_MALLOC
 #define CATKIT_MALLOC(size) malloc(size)
 #endif // CATKIT_MALLOC
 
 #ifndef CATKIT_REALLOC
-#include <stdlib.h>
 #define CATKIT_REALLOC(block, size) realloc(block, size)
 #endif // CATKIT_REALLOC
 
 #ifndef CATKIT_FREE
-#include <stdlib.h>
 #define CATKIT_FREE(block) free(block)
 #endif // CATKIT_FREE
 
 #if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
     #error "catkit.h requires a C99 compiler or later"
 #endif
-
-#include <stdarg.h>
-#include <stddef.h>
 
 // returns an allocated and formatted string. caller must `free()`
 char* catk_fmt(const char* fmt, ...);
