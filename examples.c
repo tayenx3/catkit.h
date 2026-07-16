@@ -1,3 +1,5 @@
+// this file's extension can be renamed to a .cpp and a C++ compiler will still compile it (mostly)
+
 #define CATKIT_IMPLEMENTATION
 #include "catkit.h"
 #include <stdio.h>

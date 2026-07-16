@@ -47,6 +47,12 @@ int main(void) {
 
 check out [docs.md](docs.md) for API reference
 
+## compatible C/C++ versions
+
+for C, `catkit.h` is compatible with C99 and later
+
+for C++, `catkit.h` is compabtible with C++11 and later. C++98 supported if your compiler has a C99-compliant stdlib
+
 ## license
 
 MIT

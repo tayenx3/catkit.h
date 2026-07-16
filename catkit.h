@@ -4,8 +4,10 @@
  *   MIT license - see [LICENSE](LICENSE) file for full details
  *   SPDX-License-Identifier: MIT
  * 
- *   compatible with: C99 and later
- *   (C89 support is not guaranteed)
+ *   compatible with:
+ *     C:   ≥C99
+ *     C++: ≥C++11 guaranteed
+ *          C++98 with C99-compliant stdlib
  * 
  * # flags
  * 
@@ -55,9 +57,29 @@
     #endif // _CRT_SECURE_NO_WARNINGS
 #endif //  _WIN32
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stddef.h>
+
+#ifdef __cplusplus
+    #if defined(__GNUC__) || defined(__clang__)
+        #define _CATKIT_RESTRICT __restrict__
+    #elif defined(_MSC_VER)
+        #define _CATKIT_RESTRICT __restrict
+    #else
+        #define _CATKIT_RESTRICT
+    #endif
+#else
+    #define _CATKIT_RESTRICT restrict
+#endif
+
+#ifndef va_copy
+    #define va_copy(dest, src) ((dest) = (src)) // C++98 doesn't have va_copy
+#endif
 
 #ifndef CATKIT_MALLOC
 #define CATKIT_MALLOC(size) malloc(size)
@@ -71,16 +93,12 @@
 #define CATKIT_FREE(block) free(block)
 #endif // CATKIT_FREE
 
-#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
-    #error "catkit.h requires a C99 compiler or later"
-#endif
-
-// returns an allocated and formatted string. caller must `free()`
+// returns an allocated and formatted string. caller must `free()`. thread safe
 char* catk_fmt(const char* fmt, ...);
-// returns an allocated and formatted string from a vararg list. caller must `free()`
+// returns an allocated and formatted string from a vararg list. caller must `free()`. thread safe
 char* catk_vfmt(const char* fmt, va_list args);
 
-// string builder
+// string builder. NOT thread safe
 typedef struct catk_strbuilder {
     char* data;
     size_t len;
@@ -115,8 +133,8 @@ char* catk_strbuilder_build(catk_strbuilder_t* sb);
 const char* catk_strbuilder_get(catk_strbuilder_t* sb);
 // deep copy of a builder. destination is overwritten but preserved on failure
 void catk_strbuilder_copy(
-    catk_strbuilder_t* restrict dest_sb,
-    const catk_strbuilder_t* restrict src_sb
+    catk_strbuilder_t* _CATKIT_RESTRICT dest_sb,
+    const catk_strbuilder_t* _CATKIT_RESTRICT src_sb
 );
 // pre-allocate a chunk of the builder's buffer. no effect when the builder's capacity is already larger
 void catk_strbuilder_reserve(catk_strbuilder_t* sb, size_t cap);
@@ -146,6 +164,10 @@ void catk_strbuilder_clear(catk_strbuilder_t* sb);
     #define strbuilder_clear(sb) catk_strbuilder_clear(sb)
 #endif
 
+#ifdef __cplusplus
+}
+#endif
+
 #ifdef CATKIT_IMPLEMENTATION
 
 #include <stdlib.h>
@@ -169,7 +191,7 @@ char* catk_vfmt(const char* fmt, va_list args) {
     va_end(args_copy);
     if (needed < 0) return NULL;
     
-    char* buf = CATKIT_MALLOC(needed);
+    char* buf = (char*)CATKIT_MALLOC(needed);
     if (buf) vsnprintf(buf, needed, fmt, args);
     
     return buf;
@@ -203,7 +225,7 @@ void catk_strbuilder_initn(catk_strbuilder_t* sb, const char* data, const size_t
             len++;
         }
     }
-    char* new_data = CATKIT_MALLOC(len + 1);
+    char* new_data = (char*)CATKIT_MALLOC(len + 1);
     if (new_data) {
         memcpy(new_data, data, len);
         new_data[len] = '\0';
@@ -235,7 +257,7 @@ void catk_strbuilder_vappendf(catk_strbuilder_t* sb, const char* fmt, va_list ar
         while (new_cap <= new_len) new_cap *= 2;
         sb->cap = new_cap;
         
-        char* new_data = CATKIT_REALLOC(sb->data, sb->cap);
+        char* new_data = (char*)CATKIT_REALLOC(sb->data, sb->cap);
         if (new_data == NULL) {
             CATKIT_FREE(chunk);
             return;
@@ -263,7 +285,7 @@ void catk_strbuilder_appendn(catk_strbuilder_t* sb, const char* str, const size_
         while (new_cap <= new_len) new_cap *= 2;
         sb->cap = new_cap;
         
-        char* new_data = CATKIT_REALLOC(sb->data, sb->cap);
+        char* new_data = (char*)CATKIT_REALLOC(sb->data, sb->cap);
         if (new_data == NULL) return;
         sb->data = new_data;
     }
@@ -299,7 +321,7 @@ void catk_strbuilder_vinsertf(catk_strbuilder_t* sb, const size_t pos, const cha
         while (new_cap <= new_len) new_cap *= 2;
         sb->cap = new_cap;
         
-        char* new_data = CATKIT_REALLOC(sb->data, sb->cap);
+        char* new_data = (char*)CATKIT_REALLOC(sb->data, sb->cap);
         if (new_data == NULL) {
             CATKIT_FREE(chunk);
             return;
@@ -332,7 +354,7 @@ void catk_strbuilder_insertn(catk_strbuilder_t* sb, const size_t pos, const char
         while (new_cap <= new_len) new_cap *= 2;
         sb->cap = new_cap;
         
-        char* new_data = CATKIT_REALLOC(sb->data, sb->cap);
+        char* new_data = (char*)CATKIT_REALLOC(sb->data, sb->cap);
         if (new_data == NULL) return;
         sb->data = new_data;
     }
@@ -366,8 +388,8 @@ const char* catk_strbuilder_get(catk_strbuilder_t* sb) {
 }
 
 void catk_strbuilder_copy(
-    catk_strbuilder_t* restrict dest_sb,
-    const catk_strbuilder_t* restrict src_sb
+    catk_strbuilder_t* _CATKIT_RESTRICT dest_sb,
+    const catk_strbuilder_t* _CATKIT_RESTRICT src_sb
 ) {
     if (dest_sb == NULL || src_sb == NULL) return;
     
@@ -380,7 +402,7 @@ void catk_strbuilder_copy(
         return;
     }
     
-    char* new_data = CATKIT_MALLOC(src_sb->len + 1);
+    char* new_data = (char*)CATKIT_MALLOC(src_sb->len + 1);
     if (new_data) {
         memcpy(new_data, src_sb->data, src_sb->len);
         new_data[src_sb->len] = '\0';
@@ -394,7 +416,7 @@ void catk_strbuilder_copy(
 
 void catk_strbuilder_reserve(catk_strbuilder_t* sb, size_t cap) {
     if (sb == NULL || cap <= sb->cap) return;
-    char* new_data = CATKIT_REALLOC(sb->data, cap);
+    char* new_data = (char*)CATKIT_REALLOC(sb->data, cap);
     if (new_data) {
         sb->data = new_data;
         sb->cap = cap;
