@@ -1,5 +1,5 @@
 /*
- * catkit.h - v0.1.0-alpha.1 - public domain
+ * catkit.h - v0.1.0-alpha.1
  * 
  *   MIT license - see [LICENSE](LICENSE) file for full details
  *   SPDX-License-Identifier: MIT
